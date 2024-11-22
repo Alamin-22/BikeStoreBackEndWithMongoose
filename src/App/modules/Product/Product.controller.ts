@@ -27,6 +27,49 @@ const createProduct = async (req: Request, res: Response) => {
   }
 };
 
+// getting all product from DB
+const getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const result = await ProductServices.getAllProductFromDB();
+
+    //  send response
+    res.status(200).json({
+      message: 'Bikes retrieved successfully',
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Something Went Wrong.',
+      success: false,
+      error,
+    });
+  }
+};
+// get single product from DB
+const getSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.productId; // we can also get this using destructuring
+
+    const result = await ProductServices.getSingleProductFromDB(productId);
+
+    //  send response
+    res.status(200).json({
+      message: 'Single Bike retrieved successfully',
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Something Went Wrong.',
+      success: false,
+      error,
+    });
+  }
+};
+
 export const productControllers = {
   createProduct,
+  getAllProducts,
+  getSingleProduct,
 };
