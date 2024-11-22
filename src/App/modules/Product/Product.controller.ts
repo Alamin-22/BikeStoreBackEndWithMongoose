@@ -46,6 +46,7 @@ const getAllProducts = async (req: Request, res: Response) => {
     });
   }
 };
+
 // get single product from DB
 const getSingleProduct = async (req: Request, res: Response) => {
   try {
@@ -68,8 +69,35 @@ const getSingleProduct = async (req: Request, res: Response) => {
   }
 };
 
+// update single product from DB
+const updateSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.productId; // we can also get this using destructuring
+    const updatedData = req.body;
+
+    const result = await ProductServices.UpdateSingleProductFromDB(
+      productId,
+      updatedData,
+    );
+
+    //  send response
+    res.status(200).json({
+      message: 'Single Bike updated successfully',
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Something Went Wrong.',
+      success: false,
+      error,
+    });
+  }
+};
+
 export const productControllers = {
   createProduct,
   getAllProducts,
   getSingleProduct,
+  updateSingleProduct,
 };

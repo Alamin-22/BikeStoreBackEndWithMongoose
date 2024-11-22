@@ -21,8 +21,25 @@ const getSingleProductFromDB = async (productId: string) => {
   return result;
 };
 
+// Update single product from DB
+
+const UpdateSingleProductFromDB = async (
+  productId: string,
+  updateData: Partial<TProduct>,
+) => {
+  // I have added (_id) => because I am searching on _Id filed and Updated this docs
+  const UpdatedProduct = await ProductModel.findByIdAndUpdate(
+    productId,
+    updateData,
+    { new: true, runValidators: true }, // Options: return updated doc, run validators
+  );
+
+  return UpdatedProduct;
+};
+
 export const ProductServices = {
   createProductIntoDB,
   getAllProductFromDB,
   getSingleProductFromDB,
+  UpdateSingleProductFromDB,
 };

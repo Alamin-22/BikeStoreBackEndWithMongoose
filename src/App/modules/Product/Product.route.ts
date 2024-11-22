@@ -12,4 +12,7 @@ router.get('/', productControllers.getAllProducts);
 // get single products form the DB
 router.get('/:productId', productControllers.getSingleProduct);
 
+// Update single products form the DB
+router.put('/:productId', productControllers.updateSingleProduct);
+
 export const productsRoutes = router;
