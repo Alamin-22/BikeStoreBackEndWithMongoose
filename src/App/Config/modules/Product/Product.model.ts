@@ -1,4 +1,4 @@
-import { Schema, model, connect } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { TProduct } from './Product.interface';
 
 // creating a schema for Product
@@ -20,3 +20,7 @@ const productSchema = new Schema<TProduct>({
   quantity: { type: Number, required: true },
   inStock: { type: Boolean, required: true },
 });
+
+// 3. Create a product Model.
+
+export const ProductModel = model<TProduct>('product', productSchema);

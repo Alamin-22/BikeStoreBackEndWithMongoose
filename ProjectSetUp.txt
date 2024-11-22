@@ -59,8 +59,10 @@ So as we discussed we are gonna use Modular pattern here is the step
     1. create a folder name modules inside the app folder. After that crete another folder inside the modules folder and the name will be your categories name For Example ProductModel . 
     2. inside this created folder we have to write our all needed code for only this selected category
     3. Now we are gonna follow that interface > schema > module > DB Query  patterns so we have to create interface like this product.interface.ts like this we gonna create our need file
-    4. Inside the interface file we are gonna create all the interface or type for our uses and connect mongoose with it.
-    5.
+    4. Inside the interface file we are gonna create all the interface or type for our uses and Must be export those types or interfaces to use in other files 
+    5.After creating interfaces we will create model/ schema. For this we are gonna create another file name product.model.ts and have to create  schema using those created types and on the last section of the page we have to create a model and export it.
+
+    
 
 
 
