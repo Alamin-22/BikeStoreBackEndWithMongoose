@@ -30,7 +30,44 @@ First of all We have to install express-mongoose-typescript-dotenv-cors and make
 
 
 *3* Then we have to use parser into the app.ts file like json parser and cros parser and we have to define type for each variables from express and After that We have to Install Eslint and Prettier and Configure them
-**
+** After That We have to install TS Node Dev for running ts file directly without compiling
+
+
+
+************************Software Design pattern********************
+
+
+***********WE ARE GOING TO USE ( Modular ) PATTERN***********************
+
+
+********For JS********
+
+If we use JS with mongoose then we have to follow this patterns =>
+
+=>>>  schema > module > DB Query 
+
+
+And If we use TS with mongoose then we have to add Interface before schema and keep them all like Js patters, So the Patter will be look like this =>>>>
+
+=>> interface > schema > module > DB Query 
+
+
+
+**************************pattern End********************
+
+So as we discussed we are gonna use Modular pattern here is the step
+    1. create a folder name modules inside the app folder. After that crete another folder inside the modules folder and the name will be your categories name For Example ProductModel . 
+    2. inside this created folder we have to write our all needed code for only this selected category
+    3. Now we are gonna follow that interface > schema > module > DB Query  patterns so we have to create interface like this product.interface.ts like this we gonna create our need file
+    4. Inside the interface file we are gonna create all the interface or type for our uses and connect mongoose with it.
+    5.
+
+
+
+
+
+
+
 
 
 
