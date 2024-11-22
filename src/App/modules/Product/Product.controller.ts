@@ -54,6 +54,10 @@ const getSingleProduct = async (req: Request, res: Response) => {
 
     const result = await ProductServices.getSingleProductFromDB(productId);
 
+    if (!result) {
+      throw new Error(`Product with ID ${productId} not found.`); // throwing an error message if the product is not found by Id
+    }
+
     //  send response
     res.status(200).json({
       message: 'Single Bike retrieved successfully',
@@ -62,7 +66,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: 'Something Went Wrong.',
+      message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,
     });
@@ -80,6 +84,10 @@ const updateSingleProduct = async (req: Request, res: Response) => {
       updatedData,
     );
 
+    if (!result) {
+      throw new Error(`Product with ID ${productId} not found.`); // throwing an error message if the product is not found by Id
+    }
+
     //  send response
     res.status(200).json({
       message: 'Single Bike updated successfully',
@@ -88,7 +96,32 @@ const updateSingleProduct = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: 'Something Went Wrong.',
+      message: error instanceof Error ? error.message : 'Something Went Wrong.',
+      success: false,
+      error,
+    });
+  }
+};
+// Delete single product from DB
+const DeleteSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.productId; // we can also get this using destructuring
+
+    const result = await ProductServices.DeleteSingleProductFromDB(productId);
+
+    if (!result) {
+      throw new Error(`Product with ID ${productId} not found.`); // throwing an error message if the product is not found by Id
+    }
+
+    //  send response
+    res.status(200).json({
+      message: 'Bike deleted successfully',
+      success: true,
+      data: {},
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,
     });
@@ -100,4 +133,5 @@ export const productControllers = {
   getAllProducts,
   getSingleProduct,
   updateSingleProduct,
+  DeleteSingleProduct,
 };

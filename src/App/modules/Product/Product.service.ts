@@ -34,7 +34,16 @@ const UpdateSingleProductFromDB = async (
     { new: true, runValidators: true }, // Options: return updated doc, run validators
   );
 
-  return UpdatedProduct;
+  return { UpdatedProduct };
+};
+
+//  delete a single Product From The DB
+
+const DeleteSingleProductFromDB = async (productId: string) => {
+  const result = await ProductModel.findByIdAndDelete(productId);
+
+  // after deleting returning the empty data to the response
+  return result;
 };
 
 export const ProductServices = {
@@ -42,4 +51,5 @@ export const ProductServices = {
   getAllProductFromDB,
   getSingleProductFromDB,
   UpdateSingleProductFromDB,
+  DeleteSingleProductFromDB,
 };
