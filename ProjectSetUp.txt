@@ -62,7 +62,24 @@ So as we discussed we are gonna use Modular pattern here is the step
     4. Inside the interface file we are gonna create all the interface or type for our uses and Must be export those types or interfaces to use in other files 
     5.After creating interfaces we will create model/ schema. For this we are gonna create another file name product.model.ts and have to create  schema using those created types and on the last section of the page we have to create a model and export it.
 
+
+
+*************************************Request Response  Flow Of Modular Pattern**************************************
+
+
+    client ---(Req)----> route.ts ----(Req)---> controller.ts ---(Req)---> <---(Res)--- service.ts ---(Req)--- >< ---(Res)--- DB
     
+************************************************************************************************************
+
+
+**Now we have to handle Route for this we have to create a route file name product.route.ts 
+
+** After this we have to create product.controller.ts 
+*** after that product.service.ts 
+
+and lastly we have to connect these with the main app.ts file
+
+
 
 
 

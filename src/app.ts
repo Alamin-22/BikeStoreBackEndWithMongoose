@@ -1,5 +1,6 @@
-import express, { Request, Response } from "express";
-import cors from "cors";
+import express, { Request, Response } from 'express';
+import cors from 'cors';
+import { productsRoutes } from './App/modules/Product/Product.route';
 const app = express();
 
 // parser Start
@@ -7,10 +8,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Application routes
+
+app.use('/api/products', productsRoutes);
+
 // parser End
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Bike Store Server Is Running ");
+app.get('/', (req: Request, res: Response) => {
+  res.send('Bike Store Server Is Running ');
 });
 
 export default app;
