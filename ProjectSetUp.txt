@@ -1,0 +1,39 @@
+Step -1,
+
+
+First of all We have to install express-mongoose-typescript-dotenv-cors and make sure to install typescript as a Devdependency and mongodb
+
+* Then We have to initialize an Ts Config file by typing tsc --init and set up the root dir and out dir. after that we have to create that specific folder structure like this 
+
+		On the root 
+			src > 1.app.ts => And We have to run basic express server code on it for testing
+			      2.server.ts		
+
+
+*2* Then  we have to move (The main server file) to the server.ts file and configure mongoose with it 
+    we have to keep in mind that we must use those DB credentials into the Env file and To use ENV file across the whole project we have to crete another config file for Env. here is the steps 
+    1.Create a new folder name Config inside the app Folder and have to create an index.ts file which will connect the Env to the Current working dir file so that we can export those Env from that file and use them wherever we want: 
+
+    code base => 
+
+        import dotenv from "dotenv";
+        import path from "path";
+
+        dotenv.config({ path: path.join((process.cwd(), ".env")) }); // => this is used to connect current working dir to the ENV file.
+
+        export default {
+        port: process.env.PORT,
+        dataBaseUrl: process.env.DATABASE_URL,
+            };
+
+(*2 Impotent* We must write Server.ts code into Try catch Statement to avoid server crash on error)
+
+
+*3* Then we have to use parser into the app.ts file like json parser and cros parser and we have to define type for each variables from express and After that We have to Install Eslint and Prettier and Configure them
+**
+
+
+
+
+
+
