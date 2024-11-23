@@ -1,8 +1,8 @@
 import { TOder } from './Order.interface';
 import { OrderModel } from './Order.model';
 
-const orderAProductFromDB = async (orderData: Partial<TOder>) => {
-  console.log(orderData);
+const orderAProductFromDB = async (ValidatedDataUsingZod: Partial<TOder>) => {
+  console.log(ValidatedDataUsingZod);
   const result = await OrderModel.find();
   return result;
 };
