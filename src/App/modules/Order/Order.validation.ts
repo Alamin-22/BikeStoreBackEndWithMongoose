@@ -2,14 +2,17 @@ import { Types } from 'mongoose';
 import { z } from 'zod';
 
 const orderValidationSchema = z.object({
-  email: z.string().email({ message: 'Invalid email format' }),
+  email: z
+    .string()
+    .email({ message: 'Invalid email format' })
+    .transform((email) => email.toLowerCase()), // Converts the email to lowercase,
   product: z
     .string() // first it check the id if its string
     .refine((val) => Types.ObjectId.isValid(val), {
       // if string then it check the types of provided string
       message: 'Invalid product ID format',
     })
-    .transform((val) => new Types.ObjectId(val)), // Convert that string to ObjectId format to support Mongodb
+    .transform((val) => new Types.ObjectId(val)), // Convert that string to ObjectId format to support Mongodb if needed
   quantity: z
     .number()
     .min(1, { message: 'Quantity must be at least 1' })

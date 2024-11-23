@@ -1,10 +1,12 @@
 import { TOder } from './Order.interface';
-import { OrderModel } from './Order.model';
+// import { OrderModel } from './Order.model';
 
 const orderAProductFromDB = async (ValidatedDataUsingZod: Partial<TOder>) => {
-  console.log(ValidatedDataUsingZod);
-  const result = await OrderModel.find();
-  return result;
+  console.log('From Terminal', ValidatedDataUsingZod);
+  // const result = await OrderModel.find();
+
+  // Until we implement our logic
+  return ValidatedDataUsingZod;
 };
 
 export const OrderServices = {
