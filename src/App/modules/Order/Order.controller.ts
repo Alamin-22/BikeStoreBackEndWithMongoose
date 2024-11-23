@@ -28,6 +28,28 @@ const orderAProduct = async (req: Request, res: Response) => {
   }
 };
 
+const getOrdersRevenue = async (req: Request, res: Response) => {
+  try {
+    const result = await OrderServices.getOrdersRevenueFromDB();
+    const totalRevenue = result[0].totalRevenue;
+
+    // console.log('this is from custom va', { totalRevenue });
+    // after all processing sending Response
+    res.status(200).json({
+      message: 'Revenue calculated successfully',
+      success: true,
+      data: { totalRevenue },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error instanceof Error ? error.message : 'Something Went Wrong.',
+      success: false,
+      error,
+    });
+  }
+};
+
 export const orderControllers = {
   orderAProduct,
+  getOrdersRevenue,
 };

@@ -5,6 +5,7 @@ const router = express.Router();
 
 // order a bike
 router.post('/', orderControllers.orderAProduct);
+router.get('/revenue', orderControllers.getOrdersRevenue);
 
 // exporting Orders Route
 

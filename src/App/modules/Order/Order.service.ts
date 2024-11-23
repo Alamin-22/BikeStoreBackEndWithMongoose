@@ -23,7 +23,7 @@ const orderAProductFromDB = async (validatedData: Partial<TOder>) => {
   const updatedProduct = await ProductModel.findByIdAndUpdate(
     productId,
     {
-      $inc: { quantity: -orderedQuantity! }, // Decrease quantity
+      $inc: { quantity: -orderedQuantity! }, // Decrease quantity by using (-)
       $set: { inStock: product.quantity - orderedQuantity! > 0 }, // Update inStock
     },
     { new: true }, // this is used to Return the updated product for further processing
@@ -37,6 +37,21 @@ const orderAProductFromDB = async (validatedData: Partial<TOder>) => {
   return await OrderModel.create(validatedData);
 };
 
+const getOrdersRevenueFromDB = async () => {
+  const result = OrderModel.aggregate([
+    // stage 1
+    {
+      $group: {
+        _id: null, // id =null is used to group all the data together
+        totalRevenue: { $sum: { $multiply: ['$quantity', '$totalPrice'] } },
+      },
+    },
+  ]);
+  //
+  return result;
+};
+
 export const OrderServices = {
   orderAProductFromDB,
+  getOrdersRevenueFromDB,
 };
