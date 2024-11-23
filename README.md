@@ -1,6 +1,3 @@
-Here’s the entire document formatted as a **README.md** file:
-
-````markdown
 # Express, Mongoose, and TypeScript Project Setup
 
 This guide outlines the steps to set up an Express server with Mongoose, TypeScript, and other essential tools for a scalable modular project.
