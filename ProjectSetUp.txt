@@ -64,7 +64,7 @@ So as we discussed we are gonna use Modular pattern here is the step
 
 
 
-*************************************Request Response  Flow Of Modular Pattern**************************************
+*************************************Request Response Flow Of Modular Pattern**************************************
 
 
     client ---(Req)----> route.ts ----(Req)---> controller.ts ---(Req)---> <---(Res)--- service.ts ---(Req)--- >< ---(Res)--- DB
