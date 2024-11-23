@@ -21,7 +21,7 @@ const orderAProduct = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: 'Something Went Wrong.',
+      message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,
     });
