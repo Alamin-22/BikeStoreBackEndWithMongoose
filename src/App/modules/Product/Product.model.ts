@@ -38,7 +38,7 @@ const productSchema = new Schema<TProduct>(
       maxlength: 150,
       trim: true,
     },
-    quantity: { type: Number, required: [true, 'quantity is required']  },
+    quantity: { type: Number, required: [true, 'quantity is required'] },
     inStock: { type: Boolean, required: [true, 'inStock Is Required'] },
   },
   {

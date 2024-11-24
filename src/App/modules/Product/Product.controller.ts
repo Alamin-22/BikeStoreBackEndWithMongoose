@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ProductServices } from './Product.service';
+import Config from '../../Config';
 
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -23,6 +24,10 @@ const createProduct = async (req: Request, res: Response) => {
       message: 'Something Went Wrong.',
       success: false,
       error,
+      stack:
+        Config.nodeEnv === 'development' && error instanceof Error
+          ? error.stack
+          : undefined,
     });
   }
 };
@@ -43,6 +48,10 @@ const getAllProducts = async (req: Request, res: Response) => {
       message: 'Something Went Wrong.',
       success: false,
       error,
+      stack:
+        Config.nodeEnv === 'development' && error instanceof Error
+          ? error.stack
+          : undefined,
     });
   }
 };
@@ -69,6 +78,10 @@ const getSingleProduct = async (req: Request, res: Response) => {
       message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,
+      stack:
+        Config.nodeEnv === 'development' && error instanceof Error
+          ? error.stack
+          : undefined,
     });
   }
 };
@@ -99,6 +112,10 @@ const updateSingleProduct = async (req: Request, res: Response) => {
       message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,
+      stack:
+        Config.nodeEnv === 'development' && error instanceof Error
+          ? error.stack
+          : undefined,
     });
   }
 };
@@ -124,6 +141,10 @@ const DeleteSingleProduct = async (req: Request, res: Response) => {
       message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,
+      stack:
+        Config.nodeEnv === 'development' && error instanceof Error
+          ? error.stack
+          : undefined,
     });
   }
 };

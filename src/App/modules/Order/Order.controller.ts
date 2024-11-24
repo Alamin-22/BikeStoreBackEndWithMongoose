@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { OrderServices } from './Order.service';
 import orderValidationSchema from './Order.validation';
 import { CustomError } from './Order.interface';
+import Config from '../../Config';
 
 const orderAProduct = async (req: Request, res: Response) => {
   try {
@@ -25,9 +26,14 @@ const orderAProduct = async (req: Request, res: Response) => {
     const statusCode = error instanceof CustomError ? error.status : 500;
     console.log('Form Terminal', statusCode);
     res.status(statusCode).json({
-      message: error instanceof Error ? error.message : 'Something Went Wrong.',
+      message:
+        error instanceof CustomError ? error.message : 'Something Went Wrong.',
       success: false,
       error,
+      stack:
+        Config.nodeEnv === 'development' && error instanceof Error
+          ? error.stack
+          : undefined,
     });
   }
 };
@@ -49,6 +55,10 @@ const getOrdersRevenue = async (req: Request, res: Response) => {
       message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,
+      stack:
+        Config.nodeEnv === 'development' && error instanceof Error
+          ? error.stack
+          : undefined,
     });
   }
 };

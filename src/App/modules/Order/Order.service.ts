@@ -30,7 +30,7 @@ const orderAProductFromDB = async (validatedData: Partial<TOder>) => {
   );
 
   if (!updatedProduct) {
-    throw new Error('Error updating product inventory.');
+    throw new Error('Error updating product.');
   }
 
   // Create an order
