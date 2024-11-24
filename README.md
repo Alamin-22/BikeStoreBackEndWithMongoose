@@ -313,7 +313,7 @@ app.use('/api/products', productRoutes);
 
 ---
 
-### Step 9: Run the Project
+### Step 9: Create Script 
 
 write scripts on `package.json`:
 
@@ -326,7 +326,7 @@ write scripts on `package.json`:
 
 ---
 
-### Step 9: Run the Project
+### Step 10: Run the Project
 
 Use `ts-node-dev` for live reload:
 
