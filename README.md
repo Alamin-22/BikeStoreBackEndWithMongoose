@@ -1,179 +1,304 @@
-# Express, Mongoose, and TypeScript Project Setup
+# Professional Backend Project For BikeStoreServer
 
-This guide outlines the steps to set up an Express server with Mongoose, TypeScript, and other essential tools for a scalable modular project.
-
----
-
-## Step 1: Install Dependencies
-
-Install the following packages:
-
-- **express**
-- **mongoose**
-- **typescript**
-- **dotenv**
-- **cors**
-
-Additionally, install the following as devDependencies:
-
-- **typescript**
-- **ts-node-dev**
-
-Also, make sure to install **mongodb**.
+This guide outlines how to set up a professional backend project using TypeScript, Express, Mongoose, and other essential tools. It also follows a **modular design pattern** for clean and maintainable code.
 
 ---
 
-## Step 2: Initialize TypeScript
+## Prerequisites
 
-1. Initialize a TypeScript configuration file by running:
+Before starting, ensure you have the following installed:
+
+- **Node.js** (latest stable version)
+- **npm** or **yarn**
+- **MongoDB** (local or cloud instance)
+- **TypeScript** as a development dependency
+
+---
+
+## Steps to Set Up the Project
+
+### Step 1: Install Dependencies
+
+Run the following commands to install required packages:
+
+```bash
+# Install runtime dependencies
+npm install express mongoose dotenv cors
+
+# Install TypeScript and development dependencies
+npm install -D typescript ts-node-dev @types/node @types/express eslint prettier
+```
+
+### Step 2: Initialize TypeScript
+
+Run the following command to generate a TypeScript configuration file:
+
+```bash
+tsc --init
+```
+
+Modify `tsconfig.json` to include the `src` folder as the root directory and specify an output directory for compiled files:
+
+```json
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["src"]
+}
+```
+
+### Step 3: Project Folder Structure
+
+Create the following folder structure:
+
+```
+project-root/
+├── src/
+│   ├── app.ts
+│   ├── server.ts
+│   ├── config/
+│   │   └── index.ts
+│   ├── modules/
+│   │   └── product/
+│   │       ├── product.interface.ts
+│   │       ├── product.model.ts
+│   │       ├── product.route.ts
+│   │       ├── product.controller.ts
+│   │       └── product.service.ts
+├── .env
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+---
+
+## Implementation Steps
+
+### Step 4: Set Up Express Server
+
+In `src/app.ts`, write basic Express server code to test:
+
+```typescript
+import express from 'express';
+import cors from 'cors';
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Health Check
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
+export default app;
+```
+
+### Step 5: Configure MongoDB with Mongoose
+
+Move the main server code to `src/server.ts` and connect MongoDB using Mongoose:
+
+```typescript
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import app from './app';
+
+dotenv.config();
+
+const port = process.env.PORT || 5000;
+const databaseUrl = process.env.DATABASE_URL;
+
+async function bootstrap() {
+  try {
+    await mongoose.connect(databaseUrl || '');
+    console.log('Database connected successfully');
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error('Failed to connect to the database', error);
+  }
+}
+
+bootstrap();
+```
+
+### Step 6: Environment Configuration
+
+Create a `.env` file in the project root:
+
+```
+PORT=5000
+DATABASE_URL=mongodb://localhost:27017/my_database
+```
+
+Create a config file `src/config/index.ts` to centralize environment variables:
+
+```typescript
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.join(process.cwd(), '.env') });
+
+export default {
+  port: process.env.PORT || 5000,
+  databaseUrl: process.env.DATABASE_URL || '',
+};
+```
+
+---
+
+## Modular Design Pattern
+
+The project follows a **modular design pattern** for scalability and maintainability.
+
+### File Organization
+
+1. **Interface (`product.interface.ts`)**: Define TypeScript types and interfaces for the module.
+2. **Schema & Model (`product.model.ts`)**: Define the Mongoose schema and model using the interfaces.
+3. **Route (`product.route.ts`)**: Handle incoming requests for this module.
+4. **Controller (`product.controller.ts`)**: Process requests and responses for the module.
+5. **Service (`product.service.ts`)**: Handle business logic and communicate with the database.
+
+### Request-Response Flow
+
+```
+Client → Route → Controller → Service → Database → Response
+```
+
+---
+
+### Step 7: Example: Product Module
+
+#### 1. Create an Interface (`product.interface.ts`)
+
+```typescript
+export interface IProduct {
+  name: string;
+  price: number;
+  description: string;
+  inStock: boolean;
+}
+```
+
+#### 2. Create a Model (`product.model.ts`)
+
+```typescript
+import { Schema, model } from 'mongoose';
+import { IProduct } from './product.interface';
+
+const productSchema = new Schema<IProduct>({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  description: { type: String },
+  inStock: { type: Boolean, default: true },
+});
+
+export const Product = model<IProduct>('Product', productSchema);
+```
+
+#### 3. Define Routes (`product.route.ts`)
+
+```typescript
+import express from 'express';
+import { getAllProducts } from './product.controller';
+
+const router = express.Router();
+
+router.get('/', getAllProducts);
+
+export default router;
+```
+
+#### 4. Write Controller (`product.controller.ts`)
+
+```typescript
+import { Request, Response } from 'express';
+import { getProductsFromDb } from './product.service';
+
+export const getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await getProductsFromDb();
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+```
+
+#### 5. Create Service (`product.service.ts`)
+
+```typescript
+import { Product } from './product.model';
+
+export const getProductsFromDb = async () => {
+  return await Product.find();
+};
+```
+
+---
+
+### Step 8: Connect Module to App
+
+Import and use the module's routes in `app.ts`:
+
+```typescript
+import productRoutes from './modules/product/product.route';
+
+app.use('/api/products', productRoutes);
+```
+
+---
+
+## Additional Setup
+
+### ESLint and Prettier
+
+1. Install dependencies:
+
    ```bash
-   tsc --init
-   ```
-````
-
-2. Configure the `tsconfig.json` file to set up `rootDir` and `outDir`.
-
-3. Create the following folder structure:
-   ```
-   Root directory
-   ├── src
-       ├── app.ts     // Write basic Express server code here for initial testing
-       ├── server.ts  // Main server logic
+   npm install -D eslint prettier eslint-config-prettier eslint-plugin-prettier
    ```
 
----
+2. Create `.eslintrc.json`:
 
-## Step 3: Move Server Logic to `server.ts`
-
-1. Move the main server code into `server.ts`.
-2. Configure Mongoose in `server.ts` using credentials stored in an `.env` file.
-
-### Use Environment Variables
-
-To access `.env` variables across the project:
-
-1. Create a **Config** folder inside the `app` folder.
-2. Inside the **Config** folder, create an `index.ts` file:
-
-   ```typescript
-   import dotenv from 'dotenv';
-   import path from 'path';
-
-   dotenv.config({ path: path.join(process.cwd(), '.env') });
-
-   export default {
-     port: process.env.PORT,
-     databaseUrl: process.env.DATABASE_URL,
-   };
+   ```json
+   {
+     "env": {
+       "browser": true,
+       "es2021": true
+     },
+     "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+     "parser": "@typescript-eslint/parser",
+     "plugins": ["@typescript-eslint", "prettier"],
+     "rules": {
+       "prettier/prettier": "error"
+     }
+   }
    ```
 
-**Note:** Use a `try-catch` block in `server.ts` to handle errors and prevent server crashes.
+3. Add a Prettier config (`.prettierrc`):
 
----
-
-## Step 4: Middleware and Tools
-
-1. Add middleware to `app.ts`, such as:
-
-   - JSON parser
-   - CORS middleware
-
-2. Define types for all Express-related variables.
-
-3. Install and configure **ESLint** and **Prettier** for code quality and formatting.
-
-4. Install **ts-node-dev** to run TypeScript files directly without compiling:
-   ```bash
-   npm install ts-node-dev --save-dev
+   ```json
+   {
+     "singleQuote": true,
+     "semi": false
+   }
    ```
 
 ---
 
-## Software Design Pattern
+### Run the Project
 
-This project uses the **Modular Design Pattern**.
-
----
-
-### Design Pattern for JavaScript (JS) with Mongoose
-
-The structure for JS projects using Mongoose is:
-
-- `schema` → `model` → `DB query`
-
-### Design Pattern for TypeScript (TS) with Mongoose
-
-For TS projects, include an **interface** before the schema:
-
-- `interface` → `schema` → `model` → `DB query`
-
----
-
-## Modular Pattern Setup
-
-1. Create a **modules** folder inside the `app` folder.
-2. Inside the `modules` folder, create a folder for each category. For example:
-   ```
-   modules
-   └── ProductModel
-   ```
-3. Write all the code for the specific category in this folder, following the pattern:
-   - `interface` → `schema` → `model` → `DB query`
-
-### Example Structure for a Category (e.g., Product)
-
-1. **`product.interface.ts`**: Define and export interfaces or types for the category.
-2. **`product.model.ts`**: Create a schema using the defined interfaces, and export the model.
-
----
-
-## Modular Pattern Request-Response Flow
-
-```
-Client ---(Req)---> route.ts ---(Req)---> controller.ts ---(Req)---> service.ts ---(Req)---> DB
-                       ^                                                      |
-                       |                                                      |
-                      (Res) <-------------------------------------------------
-```
-
----
-
-## Steps to Handle Routing
-
-1. Create a route file, e.g., `product.route.ts`.
-2. Create a controller file, e.g., `product.controller.ts`.
-3. Create a service file, e.g., `product.service.ts`.
-4. Connect these components to the main `app.ts` file.
-
----
-
-## Project Summary
-
-### Folder Structure
-
-```
-Root Directory
-├── src
-│   ├── app.ts           // Entry point for the app
-│   ├── server.ts        // Main server logic
-│   └── modules          // Contains all category-specific logic
-│       └── ProductModel
-│           ├── product.interface.ts
-│           ├── product.model.ts
-│           ├── product.route.ts
-│           ├── product.controller.ts
-│           └── product.service.ts
-├── Config
-│   └── index.ts         // Environment variable configuration
-├── .env                 // Environment variables
-├── tsconfig.json        // TypeScript configuration
-```
-
----
-
-## Running the Project
-
-To start the server, use:
+Use `ts-node-dev` for live reload:
 
 ```bash
 npx ts-node-dev src/server.ts
@@ -181,8 +306,8 @@ npx ts-node-dev src/server.ts
 
 ---
 
-Feel free to adapt this structure as per your project requirements. Happy coding!
+## Summary
 
-```
+This setup provides a clean, modular structure for developing scalable backend applications using TypeScript, Express, and Mongoose. By following the interface-schema-model pattern, you ensure type safety and maintainable code.
 
-```
+---
