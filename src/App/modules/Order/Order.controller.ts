@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { OrderServices } from './Order.service';
 import orderValidationSchema from './Order.validation';
+import { CustomError } from './Order.interface';
 
 const orderAProduct = async (req: Request, res: Response) => {
   try {
@@ -20,7 +21,10 @@ const orderAProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    // handle the custom error
+    const statusCode = error instanceof CustomError ? error.status : 500;
+    console.log('Form Terminal', statusCode);
+    res.status(statusCode).json({
       message: error instanceof Error ? error.message : 'Something Went Wrong.',
       success: false,
       error,

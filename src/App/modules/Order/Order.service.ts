@@ -1,5 +1,5 @@
 import { ProductModel } from '../Product/Product.model';
-import { TOder } from './Order.interface';
+import { CustomError, TOder } from './Order.interface';
 import { OrderModel } from './Order.model';
 
 const orderAProductFromDB = async (validatedData: Partial<TOder>) => {
@@ -9,7 +9,7 @@ const orderAProductFromDB = async (validatedData: Partial<TOder>) => {
   const product = await ProductModel.findById(productId);
 
   if (!product) {
-    throw new Error('Product not found.');
+    throw new CustomError(404, 'Product not found.');
   }
 
   // Checking if the stock is sufficient

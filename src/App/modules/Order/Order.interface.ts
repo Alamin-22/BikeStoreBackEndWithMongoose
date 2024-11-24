@@ -7,3 +7,13 @@ export interface TOder {
   quantity: number;
   totalPrice: number;
 }
+
+// creating a Custom Error Type to send with Status
+export class CustomError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message); // Pass this error  message to the Original Error constructor
+    this.status = status;
+  }
+}
