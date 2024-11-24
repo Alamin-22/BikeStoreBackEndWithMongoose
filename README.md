@@ -1,12 +1,12 @@
-# Professional Backend Project For BikeStoreServer
+# Professional Backend Project for BikeStoreServer
 
-This guide outlines how to set up a professional backend project using TypeScript, Express, Mongoose, and other essential tools. It also follows a **modular design pattern** for clean and maintainable code.
+This guide outlines how to set up a **professional backend project** using **TypeScript**, **Express**, **Mongoose**, **Zod**, and other essential tools. The project follows a **modular design pattern** for scalability, maintainability, and clean code.
 
 ---
 
 ## Prerequisites
 
-Before starting, ensure you have the following installed:
+Ensure you have the following installed:
 
 - **Node.js** (latest stable version)
 - **npm** or **yarn**
@@ -19,25 +19,27 @@ Before starting, ensure you have the following installed:
 
 ### Step 1: Install Dependencies
 
-Run the following commands to install required packages:
+Run the following commands to install the required packages:
 
 ```bash
 # Install runtime dependencies
-npm install express mongoose dotenv cors
+npm install express mongoose dotenv cors zod
 
-# Install TypeScript and development dependencies
+# Install development dependencies
 npm install -D typescript ts-node-dev @types/node @types/express eslint prettier
 ```
 
+---
+
 ### Step 2: Initialize TypeScript
 
-Run the following command to generate a TypeScript configuration file:
+Generate a TypeScript configuration file by running:
 
 ```bash
 tsc --init
 ```
 
-Modify `tsconfig.json` to include the `src` folder as the root directory and specify an output directory for compiled files:
+Update the `tsconfig.json` file to include the following configuration:
 
 ```json
 {
@@ -51,9 +53,11 @@ Modify `tsconfig.json` to include the `src` folder as the root directory and spe
 }
 ```
 
+---
+
 ### Step 3: Project Folder Structure
 
-Create the following folder structure:
+Organize your project using the following structure:
 
 ```
 project-root/
@@ -63,25 +67,33 @@ project-root/
 │   ├── config/
 │   │   └── index.ts
 │   ├── modules/
-│   │   └── product/
-│   │       ├── product.interface.ts
-│   │       ├── product.model.ts
-│   │       ├── product.route.ts
-│   │       ├── product.controller.ts
-│   │       └── product.service.ts
+│   │   ├── product/
+│   │   │   ├── product.interface.ts
+│   │   │   ├── product.model.ts
+│   │   │   ├── product.route.ts
+│   │   │   ├── product.controller.ts
+│   │   │   ├── product.validation.ts
+│   │   │   └── product.service.ts
+│   │   ├── order/
+│   │   │   ├── order.interface.ts
+│   │   │   ├── order.model.ts
+│   │   │   ├── order.route.ts
+│   │   │   ├── order.controller.ts
+│   │   │   ├── order.validation.ts
+│   │   │   └── order.service.ts
 ├── .env
 ├── package.json
 ├── tsconfig.json
+├── .eslintrc.json
+├── .prettierrc
 └── README.md
 ```
 
 ---
 
-## Implementation Steps
-
 ### Step 4: Set Up Express Server
 
-In `src/app.ts`, write basic Express server code to test:
+In `src/app.ts`, write basic server code to test the application:
 
 ```typescript
 import express from 'express';
@@ -93,54 +105,57 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Application routes
+
+// for Products Routs
+app.use('/api/products', productsRoutes);
+// For Orders Routs
+app.use('/api/orders', OrderRouts);
+// parser End
+
 // Health Check
 app.get('/', (req, res) => {
-  res.send('Server is running');
+  res.send('Bike Store Server is running');
 });
 
 export default app;
 ```
 
-### Step 5: Configure MongoDB with Mongoose
+---
 
-Move the main server code to `src/server.ts` and connect MongoDB using Mongoose:
+### Step 5: Configure MongoDB and Environment Variables
+
+In `src/server.ts`, connect to MongoDB using Mongoose and start the server:
 
 ```typescript
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import app from './app';
+import mongoose from 'mongoose';
+import 'dotenv/config';
+import Config from './App/Config';
 
-dotenv.config();
-
-const port = process.env.PORT || 5000;
-const databaseUrl = process.env.DATABASE_URL;
-
-async function bootstrap() {
+async function main() {
   try {
-    await mongoose.connect(databaseUrl || '');
-    console.log('Database connected successfully');
+    await mongoose.connect(Config.dataBaseUrl as string);
 
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+    app.listen(Config.port, () => {
+      console.log(`Bike Store Server Is Running On Port => ${Config.port}`);
     });
   } catch (error) {
-    console.error('Failed to connect to the database', error);
+    console.log(error);
   }
 }
 
-bootstrap();
+main();
 ```
 
-### Step 6: Environment Configuration
-
-Create a `.env` file in the project root:
+Add environment variables in a `.env` file:
 
 ```
 PORT=5000
-DATABASE_URL=mongodb://localhost:27017/my_database
+DATABASE_URL=mongodb://localhost:27017/bikestore
 ```
 
-Create a config file `src/config/index.ts` to centralize environment variables:
+Centralize environment variables in `src/config/index.ts`:
 
 ```typescript
 import dotenv from 'dotenv';
@@ -156,29 +171,38 @@ export default {
 
 ---
 
-## Modular Design Pattern
+### Step 6: Software Design Pattern
 
-The project follows a **modular design pattern** for scalability and maintainability.
+The project uses a **modular design pattern** for scalability and clean code. Each module contains:
 
-### File Organization
+1. **Interface**: TypeScript types and interfaces.
+2. **Schema & Model**: Mongoose schema and model definitions.
+3. **Routes**: Define API endpoints for the module.
+4. **Controller**: Handle request and response logic.
+5. **Service**: Business logic and database operations.
+6. **Validation**: Input validation using Zod.
 
-1. **Interface (`product.interface.ts`)**: Define TypeScript types and interfaces for the module.
-2. **Schema & Model (`product.model.ts`)**: Define the Mongoose schema and model using the interfaces.
-3. **Route (`product.route.ts`)**: Handle incoming requests for this module.
-4. **Controller (`product.controller.ts`)**: Process requests and responses for the module.
-5. **Service (`product.service.ts`)**: Handle business logic and communicate with the database.
-
-### Request-Response Flow
+#### Request-Response Flow
 
 ```
-Client → Route → Controller → Service → Database → Response
+Client ---> Route ---> Controller ---> Service ---> Database
+```
+
+or
+
+```
+ client ---(Req)----> route.ts ----(Req)---> controller.ts ---(Req)---> <---(Res)--- service.ts ---(Req)--- >< ---(Res)--- DB
 ```
 
 ---
 
-### Step 7: Example: Product Module
+### Step 7: Example Module (Product)
 
-#### 1. Create an Interface (`product.interface.ts`)
+The following is an example of creating and integrating a **Product** module:
+
+#### 1. Define Interface (`product.interface.ts`)
+
+Define types for the product module.
 
 ```typescript
 export interface IProduct {
@@ -189,7 +213,9 @@ export interface IProduct {
 }
 ```
 
-#### 2. Create a Model (`product.model.ts`)
+#### 2. Create Model (`product.model.ts`)
+
+Define the Mongoose schema and model.
 
 ```typescript
 import { Schema, model } from 'mongoose';
@@ -205,24 +231,25 @@ const productSchema = new Schema<IProduct>({
 export const Product = model<IProduct>('Product', productSchema);
 ```
 
-#### 3. Define Routes (`product.route.ts`)
+#### 3. Add Zod Validation (`product.validation.ts`)
 
 ```typescript
-import express from 'express';
-import { getAllProducts } from './product.controller';
+import { z } from 'zod';
 
-const router = express.Router();
-
-router.get('/', getAllProducts);
-
-export default router;
+export const productSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  price: z.number().positive('Price must be a positive number'),
+  description: z.string().optional(),
+  inStock: z.boolean().optional(),
+});
 ```
 
-#### 4. Write Controller (`product.controller.ts`)
+#### 4. Implement Controller (`product.controller.ts`)
 
 ```typescript
 import { Request, Response } from 'express';
-import { getProductsFromDb } from './product.service';
+import { getProductsFromDb, createProductInDb } from './product.service';
+import { productSchema } from './product.validation';
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -232,9 +259,33 @@ export const getAllProducts = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    const validatedData = productSchema.parse(req.body);
+    const newProduct = await createProductInDb(validatedData);
+    res.status(201).json({ success: true, data: newProduct });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.errors });
+  }
+};
 ```
 
-#### 5. Create Service (`product.service.ts`)
+#### 5. Create Routes (`product.route.ts`)
+
+```typescript
+import express from 'express';
+import { getAllProducts, createProduct } from './product.controller';
+
+const router = express.Router();
+
+router.get('/', getAllProducts);
+router.post('/', createProduct);
+
+export default router;
+```
+
+#### 6. Build Service (`product.service.ts`)
 
 ```typescript
 import { Product } from './product.model';
@@ -242,13 +293,17 @@ import { Product } from './product.model';
 export const getProductsFromDb = async () => {
   return await Product.find();
 };
+
+export const createProductInDb = async (data) => {
+  return await Product.create(data);
+};
 ```
 
 ---
 
-### Step 8: Connect Module to App
+### Step 8: Connect Module
 
-Import and use the module's routes in `app.ts`:
+Add the routes to `src/app.ts`:
 
 ```typescript
 import productRoutes from './modules/product/product.route';
@@ -258,56 +313,27 @@ app.use('/api/products', productRoutes);
 
 ---
 
-## Additional Setup
+### Step 9: Run the Project
 
-### ESLint and Prettier
+write scripts on `package.json`:
 
-1. Install dependencies:
-
-   ```bash
-   npm install -D eslint prettier eslint-config-prettier eslint-plugin-prettier
-   ```
-
-2. Create `.eslintrc.json`:
-
-   ```json
-   {
-     "env": {
-       "browser": true,
-       "es2021": true
-     },
-     "extends": ["eslint:recommended", "plugin:prettier/recommended"],
-     "parser": "@typescript-eslint/parser",
-     "plugins": ["@typescript-eslint", "prettier"],
-     "rules": {
-       "prettier/prettier": "error"
-     }
-   }
-   ```
-
-3. Add a Prettier config (`.prettierrc`):
-
-   ```json
-   {
-     "singleQuote": true,
-     "semi": false
-   }
-   ```
-
----
-
-### Run the Project
-
-Use `ts-node-dev` for live reload:
-
-```bash
-npx ts-node-dev src/server.ts
+```package.json
+"start:prod": "node ./dist/server.js",
+"start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+"lint": "eslint src/**/*.ts",
+"lint:fix": "eslint src/**/*.ts --fix",
 ```
 
 ---
 
-## Summary
+### Step 9: Run the Project
 
-This setup provides a clean, modular structure for developing scalable backend applications using TypeScript, Express, and Mongoose. By following the interface-schema-model pattern, you ensure type safety and maintainable code.
+Use `ts-node-dev` for live reload:
+
+```bash
+npm run start:dev
+```
 
 ---
+
+### By Following this Blog Anyone Can Create a Professional Backend Server
